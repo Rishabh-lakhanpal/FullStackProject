@@ -1,0 +1,152 @@
+{% extends 'admin.html' %}
+{% load crispy_forms_tags %}
+{% block main %}
+    <style>
+        .loader-wrapper{
+            height: auto !important;
+        }
+    </style>
+   <div class="content-header row">
+   </div>
+   <div class="content-body"><!-- users edit start -->
+       <section class="users-edit">
+            <div class="card">
+                <div class="card-content collapse show">
+                    <div class="card-body card-dashboard">
+                         <p class="card-text pb-1">
+                             Complaints
+                             <a href="{% url 'add-complaint' %}" style="float: right;" class="btn btn-info btn-sm">
+                                <i class="la la-plus"></i> Add Complaint
+                            </a>
+                         </p>
+                         
+                        <table class="table table-striped table-bordered responsive dataex-rowre-mobilesupport">
+                            <thead>
+                                <tr>
+                                    <th>NO</th>
+                                    <th>USER</th>
+                                    <th>TITLE</th>
+                                    <th>DESCRIPTION</th>
+                                    <th>ATTACHEMENT</th>
+                                    <th>OPEN DATE</th>
+                                    <th>CLOSED DATE</th>
+                                    <th>STATUS</th>
+                                    <th>ACTIONS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for complain in complains %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ complain.created_by.first_name }} {{ complain.created_by.last_name }}</td>
+                                        <td>{{ complain.title }}</td>
+                                        <td>{{ complain.description }}</td>
+                                        <td>{% if complain.attachment %}
+                                            <a 
+                                                href="{{ complain.attachment.url }}" 
+                                                download
+                                                class="btn btn-inverse-info btn-rounded btn-icon">
+                                                <i class="fa fa-download icon"></i>
+                                            </a>
+                                            {% else %}-{% endif %}
+                                        </td>
+                                        <td>{{ complain.created_date | date:'d-m-Y' }}</td>
+                                        <td>{{ complain.updated_date | date:'d-m-Y' }}</td>
+                                        <td>
+                                            {% if complain.status == 'Open' %}
+                                                <span class="badge badge-success">
+                                                    {{ complain.status }}
+                                                </span>
+                                            {% elif complain.status == 'In-Process' %}
+                                                <span class="badge badge-primary">
+                                                    {{ complain.status }}
+                                                </span>
+                                            {% else %}
+                                                <span class="badge badge-danger">
+                                                    {{ complain.status }}
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-outline-info btn-sm edit"><i class="ft-edit">
+                                                <a href="{% url 'complain-reponse' complain.id %}"> Edit </a></i>
+                                            </button>
+                                            <button class="btn btn-outline-danger btn-sm deleteComplain" data_id="{{ complain.id }}" cname="{{ complain.title }}"> 
+                                                <i class="ft-trash"></i> Delete 
+                                            </button>
+
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+       </section>
+<!-- users edit ends -->
+   </div>
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+   {% csrf_token %}
+   <script>
+   const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+   </script>
+
+<script>
+
+    $(document).ready(function () {    
+        $(document).on('click', '.deleteComplain', function () {
+            $(".data_id").val($(this).attr('data_id'))
+            $(".cname").text($(this).attr('cname'))
+            $('.delete-complain').attr("href", "delete-complain/"+$(this).attr('data_id'))
+            $("#deleteComplain").modal({
+                backdrop: 'static',
+                keyboard: false
+            })
+        })
+    })    
+    
+    </script>
+    
+    <!-- delete complain -->
+    <div class="modal fade" id="deleteComplain" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ModalLabel">Delete Complaint</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete complaint
+                        "<b class="text-danger cname" style="text-transform: capitalize;"></b>"
+                        <input type="hidden" class="data_id">
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-primary delete-complain">
+                        <i class="fa fa-trash"></i> Delete</a>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">
+                        <i class="fa fa-close"></i> Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End here -->
+    
+
+<script type="text/javascript">
+    var blank_feature = jQuery('#blank_area').html();
+    function appendFeatures() {
+      jQuery('#append_area').append(blank_feature);
+    }
+    function removeFeature(outcomeElem) {
+      jQuery(outcomeElem).parent().parent().parent().remove();
+    }
+</script>
+
+
+{% endblock main %}

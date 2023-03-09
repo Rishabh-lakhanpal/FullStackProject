@@ -1,0 +1,151 @@
+{% extends 'admin.html' %}
+{% load crispy_forms_tags %}
+{% block main %}
+    <style>
+        .loader-wrapper{
+            height: auto !important;
+        }
+    </style>
+   <div class="content-header row">
+   </div>
+    <div class="row match-height">
+        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+            <div class="card bank-card pull-up" style="height: 129.4px;">
+                <div class="card-content">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-5 text-left">
+                                <h3 class="mb-0">{{ programs.count }}</h3>
+                                <h4 class="warning mt-1 text-bold-500">Active Programs</h4>
+                            </div>
+                            <div class="col-7">
+                                <div class="float-right"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                                    <i class="la la-book" width="187" height="93" style="display: block; height: 75px; width: 150px; font-size: 85px; padding-left: 45px; opacity: 0.3;"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+            <div class="card bank-card pull-up" style="height: 129.4px;">
+                <div class="card-content">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-5 text-left">
+                                <h3 class="mb-0">0</h3>
+                                <h4 class="info mt-1 text-bold-500">Pending Programs</h4>
+                            </div>
+                            <div class="col-7">
+                                <div class="float-right"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                                    <i class="ft-book" width="187" height="93" style="display: block; height: 75px; width: 150px; font-size: 85px; padding-left: 45px; opacity: 0.3;"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+            <div class="card bank-card pull-up" style="height: 129.4px;">
+                <div class="card-content">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-5 text-left">
+                                <h3 class="mb-0"> {{ free_program }}</h3>
+                                <h4 class="danger mt-1 text-bold-500">Free Programs</h4>
+                            </div>
+                            <div class="col-7">
+                                <div class="float-right"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                                    <i class="la la-suitcase" width="187" height="93" style="display: block; height: 75px; width: 150px; font-size: 85px; padding-left: 45px; opacity: 0.3;"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+            <div class="card bank-card pull-up" style="height: 129.4px;">
+                <div class="card-content">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6 text-left">
+                                <h3 class="mb-0">{{ paid_program }}</h3>
+                                <h4 class="success mt-1 text-bold-500">Paid Programs</h4>
+                            </div>
+                            <div class="col-6">
+                                <div class="float-right"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                                    <i class="la la-money" width="187" height="93" style="display: block; height: 75px; width: 150px; font-size: 85px; padding-left: 45px; opacity: 0.3;"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   <div class="content-body"><!-- users edit start -->
+       <section class="users-edit">
+            <div class="card">
+                <div class="card-content collapse show">
+                    <div class="card-body card-dashboard">
+                         <p class="card-text pb-1">
+                            Program
+                            {% comment %} {% ifequal permission.write 'Yes' %}
+                             <a href="{% url 'add-program' %}" style="float: right;" class="btn btn-info btn-sm">
+                                 <i class="la la-plus"></i> Add Program
+                             </a>
+                             {% endifequal %} {% endcomment %}
+                         </p>
+                        <div>
+                            <form action="" method="get">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        {{ filterProgram.form.category_id | as_crispy_field }}
+                                    </div>
+                                    <div class="col-md-3">
+                                        {{ filterProgram.form.status | as_crispy_field }}
+                                    </div>
+                                    <div class="col-md-3">
+                                        {{ filterProgram.form.is_free | as_crispy_field }}
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button type="submit" class="btn btn-outline-success" style="margin-top: 26px;">
+                                            <i class="la la-search"></i>Search
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+       </section>
+<!-- users edit ends -->
+   </div>
+    <div class="row match-height">
+        {% for program in programs %}
+        <div class="col-xl-3 col-md-6 col-sm-12">
+            <div class="card">
+                <div class="card-content pb-2">
+                    <img class="card-img-top img-fluid" src="{{ program.cover_image.url }}" alt="Card image cap">
+                    <div class="card-body">
+                        <h4 class="card-title">{{ program.program_name }}</h4>
+                        <p class="card-text">{{ program.brief_description | safe }}</p>
+                        <hr>
+                        {% comment %} {% ifequal permission.delete 'Yes' %}
+                            <a href="#" class="btn btn-outline-danger btn-sm float-right mr-1"><i class="ft-trash"></i></a>
+                        {% endifequal %}
+                        {% ifequal permission.update 'Yes' %}
+                            <a href="{% url 'update-program' program.id %}" class="btn btn-outline-amber btn-sm float-right mr-1"><i class="ft-edit"></i></a>
+                        {% endifequal %} {% endcomment %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+{% endblock main %}

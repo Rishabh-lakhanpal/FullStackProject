@@ -1,0 +1,225 @@
+{% extends 'admin.html' %}
+{% load crispy_forms_tags %}
+{% block main %}
+<style>
+     .loader-wrapper{
+        height: auto !important;
+    }
+    .timeline:before{
+        background-color: #fff;
+    }
+    .timeline .timeline-wrapper .timeline-panel {
+        padding: 9px;
+        width: 50%;
+        margin-left: 5%;
+    }
+    .timeline .timeline-wrapper.timeline-inverted .timeline-panel{
+        margin-right: 5%;
+    }
+    .mail-list-container .timeline{
+        max-height: 400px;
+        overflow-y: scroll;
+    }
+</style>
+<div class="content-header row">
+</div>
+
+<div class="email-wrapper wrapper">
+    <div class="row align-items-stretch">
+        <div class="mail-view d-none d-md-block col-md-5 col-lg-5 bg-white">
+            <div class="message-body">
+                <div class="sender-details">
+                    <div class="details">
+                        <p class="msg-subject">
+                            Sender: {{ complaint.created_by.first_name }} {{ complaint.created_by.last_name }}
+                        </p>
+                        <p class="sender-email">
+                            <i class="ti-calendar"></i>
+                            Date: {{ complaint.created_date }}
+                        </p>
+                    </div>
+                </div>
+                <div class="message-content">
+                    <p>Title: {{ complaint.title }}</p>
+                    <p>Description: {{ complaint.description }}</p>
+                </div>
+                <div class="attachments-sections">
+                    <ul>
+                        <li>
+                            <div class="thumb"><i class="ti-file"></i></div>
+                            <div class="details">
+                                <p class="file-name">{{ complaint.attachment.url }}</p>
+                                <div class="buttons">
+                                    <a href="#" class="view"><i class="ft-eye"></i>View</a> &nbsp;
+                                    <a href="#" class="download"><i class="fa fa-save"></i>Download</a>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="mail-list-container col-md-7 pt-1 pb-1 border-right bg-white">
+            {% if complaint.status == 'Open' %}
+            <button
+                data_id="{{ complaint.id }}" cname="{{ complaint.title }}"
+                class="btn btn-success btn-square processComplain">
+                Mark In-Process
+            </button>   
+            {% endif %}
+            {% if complaint.status == 'In-Process' %}
+                <button
+                    data_id="{{ complaint.id }}" cname="{{ complaint.title }}"
+                    class="btn btn-danger btn-square closeComplain">
+                    Mark Closed
+                </button>   
+            {% endif %}
+            {% if complaint.status == 'Closed' %}
+                <button
+                    data_id="{{ complaint.id }}" cname="{{ complaint.title }}"
+                    class="btn btn-success btn-square reopenComplain">
+                    Re-Open
+                </button>   
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+   {% csrf_token %}
+   <script>
+   const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+   </script>
+
+<script>
+
+    $(document).ready(function () {    
+        $(document).on('click', '.processComplain', function () {
+            $(".data_id").val($(this).attr('data_id'))
+            $(".cname").text($(this).attr('cname'))
+            $('.process-complain').attr("href", "/complaint/process-complain/"+$(this).attr('data_id'))
+            $("#processComplain").modal({
+                backdrop: 'static',
+                keyboard: false
+            })
+        });
+    
+        $(document).on('click', '.closeComplain', function () {
+            $(".data_id").val($(this).attr('data_id'))
+            $(".cname").text($(this).attr('cname'))
+            $('.close-complain').attr("href", "/complaint/close-complain/"+$(this).attr('data_id'))
+            $("#closeComplain").modal({
+                backdrop: 'static',
+                keyboard: false
+            })
+        });
+
+        $(document).on('click', '.reopenComplain', function () {
+            $(".data_id").val($(this).attr('data_id'))
+            $(".cname").text($(this).attr('cname'))
+            $('.reopen-complain').attr("href", "/complaint/reopen-complain/"+$(this).attr('data_id'))
+            $("#reopenComplain").modal({
+                backdrop: 'static',
+                keyboard: false
+            })
+        });
+    })    
+    
+    </script>
+    
+    <!-- process complain -->
+    <div class="modal fade" id="processComplain" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ModalLabel">In-Process Complaint</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to mark in-process complaint 
+                        "<b class="text-danger cname" style="text-transform: capitalize;"></b>"
+                        <input type="hidden" class="data_id">
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-primary process-complain">
+                        <i class="fa fa-wrench"></i> Yes</a>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">
+                        <i class="fa fa-close"></i> Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End here -->
+    
+    <!-- close complain -->
+    <div class="modal fade" id="closeComplain" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ModalLabel">Close Complaint</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to mark close complaint 
+                        "<b class="text-danger cname" style="text-transform: capitalize;"></b>"
+                        <input type="hidden" class="data_id">
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-primary close-complain">
+                        <i class="fa fa-flag-checkered"></i> Yes</a>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">
+                        <i class="fa fa-close"></i> Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End here -->
+       
+     <!-- reopen complain -->
+     <div class="modal fade" id="reopenComplain" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ModalLabel">Re-open Complaint</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to re-open complaint 
+                        "<b class="text-danger cname" style="text-transform: capitalize;"></b>"
+                        <input type="hidden" class="data_id">
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-primary reopen-complain">
+                        <i class="fa fa-flag-checkered"></i> Yes</a>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">
+                        <i class="fa fa-close"></i> Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End here -->
+       
+
+<script type="text/javascript">
+    var blank_feature = jQuery('#blank_area').html();
+    function appendFeatures() {
+      jQuery('#append_area').append(blank_feature);
+    }
+    function removeFeature(outcomeElem) {
+      jQuery(outcomeElem).parent().parent().parent().remove();
+    }
+</script>
+
+
+{% endblock main %}

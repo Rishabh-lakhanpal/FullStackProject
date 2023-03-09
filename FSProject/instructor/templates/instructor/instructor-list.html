@@ -1,0 +1,150 @@
+{% extends 'admin.html' %}
+
+{% block main %}
+    <style>
+        .loader-wrapper{
+            height: auto !important;
+        }
+    </style>
+   <div class="content-header row">
+   </div>
+   <div class="content-body"><!-- users edit start -->
+       <section class="users-edit">
+            <div class="card">
+                <div class="card-content collapse show">
+                    <div class="card-body card-dashboard">
+                         <p class="card-text pb-1">
+                             Instructor Details
+                             <a href="{% url 'instructor-registration' %}" style="float: right;" class="btn btn-info btn-sm">
+                                <i class="la la-plus"></i> Add Instructor
+                            </a>
+                         </p>
+
+                        <table class="table table-striped table-bordered responsive dataex-rowre-mobilesupport">
+                          <thead>
+                            <tr>
+                              <th>Full Name</th>
+                              <th>Institute Name</th>
+                              <th>Year of Experience</th>
+                              <th>Expertise Subject</th>
+                              <th>Action</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                          {% for instructor in instructors %}
+                            <tr>
+                              <td>{{ instructor.instructor }}</td>
+                              <td>{{ instructor.institute_name }}</td>
+                              <td>{{ instructor.period_of_working }}</td>
+                              <td>{{ instructor.experience_in }}</td>
+                              <td>
+                                 <button class="btn btn-outline-info btn-sm view"><i class="ft-eye"><a href='{% url "instructor-detail" instructor.instructor.id %}'> View </a></i></button>
+                                  <button class="btn btn-outline-info btn-sm edit"><i class="ft-edit"><a href="#"> Edit </a></i></button>
+                                  <button class="btn btn-outline-danger btn-sm delete" data-id="{{ instructor.instructor.id }}" instructor-name="{{ instructor.instructor.first_name }}"> <i class="ft-trash"></i> Delete </button>
+                              </td>
+                            </tr>
+                          {% endfor %}
+                          </tbody>
+                          <tfoot>
+                            <tr>
+                             <th>Full Name</th>
+                              <th>Institute Name</th>
+                              <th>Year of Experience</th>
+                              <th>Expertise Subject</th>
+                              <th>Action</th>
+                            </tr>
+                          </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+       </section>
+<!-- users edit ends -->
+   </div>
+
+{% comment %} 
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+   {% csrf_token %}
+   <script>
+   const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+   </script>
+
+   <script>
+       $(document).on("click", ".delete", function(){
+
+           var instructor_id = $(this).attr('data-id');
+           var instructor_name = "Are you sure you want to delete instructor '"+$(this).attr('instructor-name')+"'";
+           $(".instructor-name").text(instructor_name);
+
+           $(".instructorId").val(instructor_id);
+           $("#delete").modal("show");
+
+       })
+
+
+
+
+   </script> {% endcomment %}
+
+
+<div class="modal fade text-left" id="delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel10"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-danger white">
+                <h4 class="modal-title white" id="myModalLabel10">Delete Instructor</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="instructor-name"></p>
+                {% comment %} <form action="{% url 'delete-instructor' %}" method="POST"> {% endcomment %}
+                    {% csrf_token %}
+                    <input type="hidden" class="instructorId" name="instructor_id">
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn grey btn-outline-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-outline-danger delete-lession">Delete</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script type="text/javascript">
+    var blank_feature = jQuery('#blank_area').html();
+    function appendFeatures() {
+      jQuery('#append_area').append(blank_feature);
+    }
+    function removeFeature(outcomeElem) {
+      jQuery(outcomeElem).parent().parent().parent().remove();
+    }
+</script>
+
+<!--<script>-->
+
+<!--    <type="text/javascript">-->
+<!--    var blank_feature = jQuery('#blank_area').html();-->
+<!--    jQuery(document).ready(function(){-->
+<!--        jQuery("#blank_area").hide();-->
+<!--    })-->
+<!--    function appendFeatures() {-->
+<!--      jQuery('#append_area').append(blank_feature);-->
+<!--    }-->
+<!--    function removeFeature(outcomeElem) {-->
+<!--      jQuery(".feature-"+outcomeElem).remove();-->
+<!--    }-->
+
+
+<!--</script>-->
+
+{% endblock main %}
